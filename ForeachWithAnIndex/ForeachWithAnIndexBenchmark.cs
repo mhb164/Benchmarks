@@ -35,9 +35,9 @@ public class ForeachWithAnIndexBenchmark
     [Benchmark]
     public void BySelect()
     {
-        foreach (var item in _items.Select((value, i) => new { i, value }))
+        foreach (var (item, index) in _items.Select((v, i) => (v, i)))
         {
-            DoSomeThing(item.i, item.value);
+            DoSomeThing(index, item);
         }
     }
 
