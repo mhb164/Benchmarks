@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ForeachWithAnIndex;
+namespace Benchmarks;
 
 [MemoryDiagnoser]
-public class ForeachWithAnIndexBenchmark
+public class ForeachWithAnIndexBenchmark: BenchmarkBase
 {
     [Params(100, 100_000)]
     public int ItemCount { get; set; }
