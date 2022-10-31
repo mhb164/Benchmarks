@@ -13,7 +13,7 @@ public class ForeachWithAnIndexBenchmark: BenchmarkBase
     [Params(100, 100_000)]
     public int ItemCount { get; set; }
 
-    private static List<string> _items;
+    private List<string> _items;
 
     [GlobalSetup]
     public void GlobalSetup()
