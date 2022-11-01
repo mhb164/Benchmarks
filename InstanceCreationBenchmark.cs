@@ -17,13 +17,14 @@ public class InstanceCreationBenchmark : BenchmarkBase
     private Func<string, Person> CreatePersonByExpression;
     private delegate Person DynamicPersonActivator(string name);
     private DynamicPersonActivator CreatePersonByEmit;
+    private static Type PersonType = typeof(Person);
 
     [GlobalSetup]
     public void GlobalSetup()
     {
         CreatePersonByExpression = GenerateCreatePersonByExpression();
         CreatePersonByEmit = GenerateCreatePersonByEmit();
-     
+
     }
 
     private Func<string, Person> GenerateCreatePersonByExpression()
@@ -65,9 +66,21 @@ public class InstanceCreationBenchmark : BenchmarkBase
     }
 
     [Benchmark]
+    public void DynamicallyNoConstructorStatic()
+    {
+        DoSomeThing(Activator.CreateInstance(PersonType) as Person);
+    }
+
+    [Benchmark]
     public void DynamicallyByConstructor()
     {
         DoSomeThing(Activator.CreateInstance(typeof(Person), "Name") as Person);
+    }
+
+    [Benchmark]
+    public void DynamicallyByConstructorStatic()
+    {
+        DoSomeThing(Activator.CreateInstance(PersonType, "Name") as Person);
     }
 
     [Benchmark]

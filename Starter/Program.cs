@@ -8,11 +8,12 @@ var benchmarkTypes = typeof(BenchmarkBase).Assembly.GetTypes()
 while (true)
 {
     Console.WriteLine("--------------< Benchmarks >--------------");
+    Console.WriteLine($" [0] Exit");
     for (int i = 0; i < benchmarkTypes.Count; i++)
     {
         Console.WriteLine($" [{i + 1}] {benchmarkTypes[i].Name}");
     }
-    Console.WriteLine("Enter benchmark number or '0' for exit:");
+    Console.Write("Enter number: ");
     var numberText = Console.ReadLine();
 
     if (!int.TryParse(numberText, out var number))
@@ -30,7 +31,7 @@ while (true)
         continue;
     }
 
-    var benchmarkType = benchmarkTypes[number-1];
+    var benchmarkType = benchmarkTypes[number - 1];
     Console.WriteLine($"Running '{benchmarkType}' ...");
     Console.WriteLine(BenchmarkRunner.Run(benchmarkType));
 }
