@@ -1,37 +1,97 @@
 ﻿using BenchmarkDotNet.Running;
 using Benchmarks;
+using System.Reflection;
+using System.Text;
 
-var benchmarkTypes = typeof(BenchmarkBase).Assembly.GetTypes()
-    .Where(x => x.BaseType == typeof(BenchmarkBase))
-    .ToList();
-
-while (true)
+internal class Program
 {
-    Console.WriteLine("--------------< Benchmarks >--------------");
-    Console.WriteLine($" [0] Exit");
-    for (int i = 0; i < benchmarkTypes.Count; i++)
+    public static string ProductVersion => Assembly.GetAssembly(typeof(Program)).GetName().Version.ToString();
+    private static void Main(string[] args)
     {
-        Console.WriteLine($" [{i + 1}] {benchmarkTypes[i].Name}");
-    }
-    Console.Write("Enter number: ");
-    var numberText = Console.ReadLine();
+        var benchmarks = BenchmarkGroupHelper.GetBenchmarks();
 
-    if (!int.TryParse(numberText, out var number))
+        if (args.Any())
+        {
+            if (HelpRequired(args.FirstOrDefault()))
+            {
+                Console.WriteLine(GenerateHelp(benchmarks));
+                return;
+            }
+
+            if (int.TryParse(args.First(), out var selectedNumber))
+            {
+                if (!benchmarks.ContainsKey(selectedNumber))
+                {
+                    ShowMenu(benchmarks, $"'{selectedNumber}' number is wrong!");
+                    return;
+                }
+                else
+                {
+                    RunBenchmark(selectedNumber, benchmarks[selectedNumber].Type);
+                    return;
+                }
+            }
+        }
+
+        ShowMenu(benchmarks);
+    }
+
+    private static bool HelpRequired(string param)
     {
-        continue;
+        return param == "-h" || param == "--help" || param == "/?";
     }
 
-    if (number == 0)
+    private static string GenerateHelp(Dictionary<int, (Type Type, int Number)> benchmarks)
     {
-        Environment.Exit(0);
+        var help = new StringBuilder();
+        help.AppendLine($" Benchmarks v{ProductVersion} ");
+        foreach (var benchmark in benchmarks.Values)
+        {
+            help.AppendLine($" [{benchmark.Number}] {benchmark.Type.Name}");
+        }
+        return help.ToString();
     }
 
-    if (number > benchmarkTypes.Count)
+    private static void ShowMenu(Dictionary<int, (Type Type, int Number)> benchmarks, string message = null)
     {
-        continue;
+        Console.WriteLine($" ----------------");
+        if (!string.IsNullOrEmpty(message))
+        {
+            Console.WriteLine(message);
+        }
+
+        Console.WriteLine($" Benchmarks v{ProductVersion} ");
+        Console.WriteLine($" [0] Exit");
+        foreach (var benchmark in benchmarks.Values)
+        {
+            Console.WriteLine($" [{benchmark.Number}] {benchmark.Type.Name}");
+        }
+        Console.Write("Enter number: ");
+        var userChoise = Console.ReadLine();
+
+        if (!int.TryParse(userChoise, out var selectedNumber))
+        {
+            ShowMenu(benchmarks, $"'{userChoise}' is not a number!");
+            return;
+        }
+
+        if (selectedNumber == 0)
+        {
+            Environment.Exit(0);
+        }
+
+        if (!benchmarks.ContainsKey(selectedNumber))
+        {
+            ShowMenu(benchmarks, $"'{selectedNumber}' number is wrong!");
+            return;
+        }
+
+        RunBenchmark(selectedNumber, benchmarks[selectedNumber].Type);
     }
 
-    var benchmarkType = benchmarkTypes[number - 1];
-    Console.WriteLine($"Running '{benchmarkType}' ...");
-    Console.WriteLine(BenchmarkRunner.Run(benchmarkType));
+    private static void RunBenchmark(int number, Type benchmarkType)
+    {
+        Console.WriteLine($"Running '[{number}] {benchmarkType.Name}' ...");
+        Console.WriteLine(BenchmarkRunner.Run(benchmarkType));
+    }
 }

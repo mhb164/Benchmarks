@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Benchmarks;
 
-[MemoryDiagnoser]
-public class ForeachWithAnIndexBenchmark: BenchmarkBase
+[MemoryDiagnoser, BenchmarkGroup(1)]
+public class ForeachWithAnIndexBenchmark
 {
+
     [Params(100, 100_000)]
     public int ItemCount { get; set; }
 

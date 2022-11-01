@@ -11,8 +11,8 @@ using Iced.Intel;
 
 namespace Benchmarks;
 
-[MemoryDiagnoser]
-public class InstanceCreationBenchmark : BenchmarkBase
+[MemoryDiagnoser, BenchmarkGroup(2)]
+public class InstanceCreationBenchmark
 {
     private Func<string, Person> CreatePersonByExpression;
     private delegate Person DynamicPersonActivator(string name);
