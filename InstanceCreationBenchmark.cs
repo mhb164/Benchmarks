@@ -96,11 +96,11 @@ public class InstanceCreationBenchmark
     }
 
     private void DoSomeThing(Person person) => _ = person.Name;
-}
 
-public class Person
-{
-    public readonly string Name;
-    public Person() : this("No Name!") { }
-    public Person(string name) { Name = name; }
+    public class Person
+    {
+        public readonly string Name;
+        public Person() : this("No Name!") { }
+        public Person(string name) { Name = name; }
+    }
 }

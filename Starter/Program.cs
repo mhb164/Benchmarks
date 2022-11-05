@@ -45,7 +45,7 @@ internal class Program
     {
         var help = new StringBuilder();
         help.AppendLine($" Benchmarks v{ProductVersion} ");
-        foreach (var benchmark in benchmarks.Values)
+        foreach (var benchmark in benchmarks.Values.OrderBy(x => x.Number))
         {
             help.AppendLine($" [{benchmark.Number}] {benchmark.Type.Name}");
         }
@@ -62,7 +62,7 @@ internal class Program
 
         Console.WriteLine($" Benchmarks v{ProductVersion} ");
         Console.WriteLine($" [0] Exit");
-        foreach (var benchmark in benchmarks.Values)
+        foreach (var benchmark in benchmarks.Values.OrderBy(x => x.Number))
         {
             Console.WriteLine($" [{benchmark.Number}] {benchmark.Type.Name}");
         }
