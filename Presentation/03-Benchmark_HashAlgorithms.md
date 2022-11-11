@@ -1,0 +1,1 @@
+﻿SHA256 seems to be good, don't forget 𝒔𝒂𝒍𝒕
