@@ -8,12 +8,27 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Iced.Intel;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
 
 namespace Benchmarks;
 
 [MemoryDiagnoser, BenchmarkGroup(2)]
+[SimpleJob(runtimeMoniker: RuntimeMoniker.Net60, baseline: true)]
+[SimpleJob(runtimeMoniker: RuntimeMoniker.Net70)]
+[Config(typeof(Config))]
+//[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.Method)]
 public class InstanceCreationBenchmark
 {
+    private class Config : ManualConfig
+    {
+        public Config()
+        {
+            HideColumns("Job", "Error", "StdDev", "RatioSD");
+        }
+    }
+
     private Func<string, Person> CreatePersonByExpression;
     private delegate Person DynamicPersonActivator(string name);
     private DynamicPersonActivator CreatePersonByEmit;
@@ -47,50 +62,50 @@ public class InstanceCreationBenchmark
         return (DynamicPersonActivator)dynamicMethod.CreateDelegate(typeof(DynamicPersonActivator));
     }
 
-    [Benchmark]
-    public void NewOperatorNoConstructor()
-    {
-        DoSomeThing(new Person());
-    }
+    //[Benchmark]
+    //public void NewOperatorNoConstructor()
+    //{
+    //    DoSomeThing(new Person());
+    //}
 
     [Benchmark]
-    public void NewOperatorByConstructor()
+    public void NewOperator()
     {
         DoSomeThing(new Person("Name"));
     }
 
-    [Benchmark]
-    public void DynamicallyNoConstructor()
-    {
-        DoSomeThing(Activator.CreateInstance(typeof(Person)) as Person);
-    }
+    //[Benchmark]
+    //public void DynamicallyNoConstructor()
+    //{
+    //    DoSomeThing(Activator.CreateInstance(typeof(Person)) as Person);
+    //}
+
+    //[Benchmark]
+    //public void DynamicallyNoConstructorStatic()
+    //{
+    //    DoSomeThing(Activator.CreateInstance(PersonType) as Person);
+    //}
 
     [Benchmark]
-    public void DynamicallyNoConstructorStatic()
-    {
-        DoSomeThing(Activator.CreateInstance(PersonType) as Person);
-    }
-
-    [Benchmark]
-    public void DynamicallyByConstructor()
+    public void Dynamically()
     {
         DoSomeThing(Activator.CreateInstance(typeof(Person), "Name") as Person);
     }
 
-    [Benchmark]
-    public void DynamicallyByConstructorStatic()
-    {
-        DoSomeThing(Activator.CreateInstance(PersonType, "Name") as Person);
-    }
+    //[Benchmark]
+    //public void DynamicallyStatic()
+    //{
+    //    DoSomeThing(Activator.CreateInstance(PersonType, "Name") as Person);
+    //}
 
     [Benchmark]
-    public void DynamicallyByExpressionByConstructor()
+    public void DynamicallyByExpression()
     {
         DoSomeThing(CreatePersonByExpression("Name"));
     }
 
     [Benchmark]
-    public void NewOperatorByEmitByConstructor()
+    public void NewOperatorByEmit()
     {
         DoSomeThing(CreatePersonByEmit("Name"));
     }

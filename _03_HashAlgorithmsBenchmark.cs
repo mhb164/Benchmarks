@@ -6,12 +6,26 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 
 namespace Benchmarks;
 
 [MemoryDiagnoser, BenchmarkGroup(3)]
+[SimpleJob(runtimeMoniker: RuntimeMoniker.Net60, baseline: true)]
+[SimpleJob(runtimeMoniker: RuntimeMoniker.Net70)]
+[Config(typeof(Config))]
 public class HashAlgorithmsBenchmark
 {
+
+    private class Config : ManualConfig
+    {
+        public Config()
+        {
+            HideColumns("Job", "Error", "StdDev", "RatioSD");
+        }
+    }
+
     public string Password;
     public byte[] PasswordAsBytes;
 
@@ -19,7 +33,7 @@ public class HashAlgorithmsBenchmark
     public void GlobalSetup()
     {
         Password = "MyP@ssw0rd!";
-        PasswordAsBytes = Encoding.ASCII.GetBytes(Password);
+        PasswordAsBytes = Encoding.UTF8.GetBytes(Password);
     }
 
     [Benchmark(Description = "MD5")]
