@@ -24,6 +24,8 @@ namespace Benchmarks;
 
 [MemoryDiagnoser, BenchmarkGroup(4)]
 [Config(typeof(Config))]
+//[SimpleJob(runtimeMoniker: RuntimeMoniker.Net60, baseline: true)]
+//[SimpleJob(runtimeMoniker: RuntimeMoniker.Net70)]
 //[Orderer(BenchmarkDotNet.Order.SummaryOrderPolicy.FastestToSlowest)]
 public class StructEqualityBenchmark
 {

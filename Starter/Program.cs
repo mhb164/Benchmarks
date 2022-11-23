@@ -7,7 +7,7 @@ internal class Program
 {
     public static string ProductVersion => Assembly.GetAssembly(typeof(Program)).GetName().Version.ToString();
     private static void Main(string[] args)
-    {
+    {      
         //var benchmark = new TempBenchmark();
         //benchmark.GlobalSetup();
         ////benchmark.NormalLoad();
