@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using Benchmarks;
+using Benchmarks.ProofOfConcepts;
 using System.Reflection;
 using System.Text;
 
@@ -7,14 +8,16 @@ internal class Program
 {
     public static string ProductVersion => Assembly.GetAssembly(typeof(Program)).GetName().Version.ToString();
     private static void Main(string[] args)
-    {      
+    {
+        //new EnumerateProofOfConcept().Run(args); return;
+
         //var benchmark = new TempBenchmark();
         //benchmark.GlobalSetup();
         ////benchmark.NormalLoad();
         //benchmark.MetadataLoadContext();
 
         //BenchmarkSwitcher.FromAssembly(typeof(ForeachWithAnIndexBenchmark).Assembly).Run();
-        //return;
+
         var benchmarks = BenchmarkGroupHelper.GetBenchmarks();
 
         if (args.Any())
